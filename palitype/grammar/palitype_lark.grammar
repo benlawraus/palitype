@@ -1,0 +1,1 @@
+line : (CHAR        | pt_char        | NEWLINE)+part : TEXT | DELIMITER_OPEN| SEPARATOR| DELIMTER_CLOSECHAR : /^[^{}=]*$/pt_char : OPEN_CURLY            | CLOSE_CURLY            | SEPARATOROPEN_CURLY  : "{{"CLOSE_CURLY : "}}"SEPARATOR   : ">>"WORD_CHAR   : /[a-zA-Z\u0100-\u017F\u1E00-\u1EFF]+/RST_CHAR    : /[!@#$%^&*()_+-=0-9?\\/?{}<,.\[\]]/
