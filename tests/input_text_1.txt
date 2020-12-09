@@ -1,0 +1,38 @@
+ONLY APPEND TEXT TO THIS FILE, OTHERWISE EXISTING TESTS WILL FAIL
+{[ Cross the flood = Ogha taraṇa ]}
+--------------------------------------
+.acknowledgment 
+.SNintro
+
+{[[Do you Sir, know how to cross the flood? =
+Kathaṃ nu tvaṃ, mārisa, ogham atari?]]}
+
+Lord Buddha replied, 
+{
+By not standing (on the bottom),  by not reaching out, is the flood crossed. =
+Appatiṭṭhaṃ khvāhaṃ anāyūhaṃ [#āyūhaṃ]_ ogham atari.
+}
+Lord Buddha replied,
+{By not standing (on the bottom),
+by not reaching out, is the flood crossed.
+=
+Appatiṭṭhaṃ khvāhaṃ anāyūhaṃ [#āyūhaṃ]_ ogham atari.}
+
+.. [#āyūhaṃ]  {=āyūhaṃ}  is often translated as {striving; here I use {they reach out with every arm and leg  = Āyūhati sabbagattebhi jantu} in the context of the Dāmalisutta 
+{Cross the flood=Ogha taraṇa}
+======================================
+
+i=SN1.1.1
+e=By not reaching out, is the flood crossed.
+p=Appatiṭṭhaṃ khvāhaṃ anāyūhaṃ [#āyūhaṃ]_ ogham atari.=.i=SN1.1.1
+e=By not reaching out, is the flood crossed.p=Appatiṭṭhaṃ khvāhaṃ anāyūhaṃ 
+[#āyūhaṃ]_ ogham atari.=.
+
+Lord Buddha replied,
+v= 
+    
+    i=SN1.1.2e=By not standing (on the bottom),  
+    by not reaching out, is the flood crossed.p=
+    Appatiṭṭhaṃ khvāhaṃ anāyūhaṃ [#āyūhaṃ]_
+    ogham atari.=.
+This is the end of the text

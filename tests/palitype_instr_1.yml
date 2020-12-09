@@ -1,0 +1,1 @@
+delimiters :  # Minimium of two delimiters plus the End delimiter    Index : 'i='    English : 'e='    Pali : 'p='    Fluff : 'f='    Verse : 'v='end delimiter : '=.'inner markup :    Pali : '*' do not show :    - Index#Mouse hover:#    - Noneexclude from database :    - Fluffsubstitute :    Verse : '.. class:: m-noindent'
