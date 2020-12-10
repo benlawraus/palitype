@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 class L(list):
-    """
-    A subclass of list that can accept additional attributes.
-    Should be able to be used just like a regular list.
-    
+    """A subclass of list that can accept additional attributes. Should be able
+    to be used just like a regular list.
+
     Acknowledgment: an update on recipe 579103. 99% taken from there.
 
     The problem:
@@ -27,6 +26,7 @@ class L(list):
     a = L( 2 ** b for b in range(4) )( x="Hey!" )  # [1, 2, 4, 8]
     a = L( 2 )                                     # [2]
     """
+
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls, args, kwargs)
 
@@ -39,4 +39,3 @@ class L(list):
 
     def __str__(self):
         return f"{self[:]}\n{self.__dict__}"
-    
