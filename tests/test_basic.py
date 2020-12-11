@@ -16,6 +16,8 @@ from palitype.palilex import group_into_sections, get_settings
 from palitype.db_ref import populate_sections
 from palitype.palilex import markup_substitution
 from palitype.classes import Delim, Mod_counter
+from palitype.constants import END_DELIMITER
+from typing import List
 #import lark
 #lark.logger.setLevel(logging.DEBUG)
 import re
@@ -164,16 +166,62 @@ def test_surround(text, text_to_markup, finished_text, tok):
     assert text.replace(text[istart:iend], mod_text) == finished_text
 
 
-d = {
-    "token": "p=",
-    "tag": "Pali",
-    "inline_markup": "*",
-    "hide": False,
-    "tooltip": False,
-    "exclude_db": False,
-    "substitute": ".. class m-noindent"
-}
-phrase_pattern = re.compile(r"[^\s]+[ \w]+[^\s]+")
+def make_verse(start_whitesp:str, phrases:List[str], end_whitesp:str, m:str):
+    """
+    Make a verse and its corresponding marked-up version.
+
+    Parameters
+    ----------
+    start_whitesp : str
+    phrases : List[str]
+    end_whitesp : str
+    m : str
+        The token for inline markup.
+
+    Returns
+    -------
+    test_text : TYPE
+        Original text.
+    answer : TYPE
+        Marked-up version.
+
+    """
+    _a = start_whitesp + '\n'.join([m + p + m for p in phrases]) + end_whitesp
+    answer = _a.splitlines()
+    test_text = start_whitesp + '\n'.join(phrases) + end_whitesp
+    return test_text,answer
+
+
+
+def make_a_delim(token='p=', tag='Pali',substitute=".. class m-noindent"):
+    d = {
+        "token": token,
+        "tag": tag,
+        "inline_markup": "*",
+        "hide": False,
+        "tooltip": False,
+        "exclude_db": False,
+        "substitute": substitute
+    }
+    return Delim(*list(d.values()))
+
+def verse_n_lang(nr_lang: int, 
+                 start_whitesp: str, phrases: List[str], end_whitesp:str):
+    if nr_lang>24:
+        nr_lang = 24
+    orig_tot = ''
+    for lang_ix in range(nr_lang):
+        ix_s = ord('a')+lang_ix
+        delim = make_a_delim(token = chr(ix_s)+'=',
+                         tag = ''.join([chr(i) for i in range(ix_s,ix_s+3)]),
+                         substitute='')
+        orig, marked = make_verse(start_whitesp, phrases, end_whitesp,
+                              delim.inline_markup)
+        orig_tot += delim.token + orig
+    end_delim = 
+    orig_tot = orig_tot + 
+
+phrase_pattern = re.compile(r"[^\s=]+[ \w]+[^\s=]+")
 white_space_pattern = re.compile(r" +")
 
 
@@ -181,12 +229,9 @@ white_space_pattern = re.compile(r" +")
        st.lists(st.from_regex(phrase_pattern, fullmatch=True), min_size=1),
        st.from_regex(white_space_pattern, fullmatch=True))
 def test_delim_modify_lines(start_whitesp, phrases, end_whitesp):
-    delim = Delim(*list(d.values()))
-    delim.substitute = ''
-    m = delim.inline_markup
-    _a = start_whitesp + '\n'.join([m + p + m for p in phrases]) + end_whitesp
-    answer = _a.splitlines()
-    test_text = start_whitesp + '\n'.join(phrases) + end_whitesp
+    delim = make_a_delim(substitute='')
+    test_text, answer = make_verse(start_whitesp, phrases, end_whitesp,
+                                         delim.inline_markup)
     mod = Mod_counter()
     mod_text = delim.get_modified_lines(test_text, mod)
     for ix, a in enumerate(answer):

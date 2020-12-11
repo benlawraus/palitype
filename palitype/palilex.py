@@ -240,7 +240,7 @@ def palilex(files: List[str]):
             raise Exception("No instruction filename in file.")
         yaml_text = (p.parent / instr_filename).read_text()
         settings = get_settings(yaml_text)
-        delims = list(settings['delim_dict'].keys())
+        delims = list(settings.delim_dict.keys())
         mod_text, mod = markup_substitution(
             settings,
             group_into_sections(delims, delimiter_locations(delims, text)),
@@ -248,7 +248,7 @@ def palilex(files: List[str]):
         for k, v in mod.__dict__.items():
             if k == 'last_change':
                 continue
-            print(f"number of {k} is {v}")
+            print(f"number of {k} sections is {v}")
         pathlib.Path(infile + '.rst').write_text(mod_text)
         return
 

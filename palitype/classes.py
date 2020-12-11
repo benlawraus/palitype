@@ -73,6 +73,8 @@ class Delim():
     """
 
     def __init__(self, *args):
+        if isinstance(args, dict):
+            args = args.values()
         for ix, d in enumerate(DELIMITER_KEYS):
             if ix < len(args):    # assign from args
                 self.__setattr__(d, args[ix])
@@ -95,6 +97,19 @@ class Delim():
         bool
         """
         return self.token == token
+    
+    @staticmethod
+    def default_dict(**kwargs):
+        for ix, d in enumerate(DELIMITER_KEYS):
+            
+            self.__setattr__(d, )
+            # these require text, so make null string as default
+            elif d in ["inline_markup", "substitute"]:
+                self.__setattr__(d, '')
+            # these are bool so default to False
+            else:
+                self.__setattr__(d, False)
+            
 
     @staticmethod
     def surround(m: str, text: str) -> str:
