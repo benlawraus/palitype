@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 """Contains classes."""
 from dataclasses import dataclass
-from .constants import YAML_KEYS, DELIMITER_KEYS, END_DELIMITER
-from typing import List, TypedDict
+from .constants import Delimiter, END_DELIMITER, Yaml_keywords
+from typing import List, TypedDict, Any, Dict
 from collections import namedtuple
 
 Pair_item = namedtuple("Pair_item", "start end")
 Pair_delimiter_text = namedtuple("Pair_delimiter_text", "delimiter text")
-
-Yaml_keywords = namedtuple("Yaml_keywords", YAML_KEYS)
 
 
 class Token():
@@ -27,24 +25,21 @@ class Token():
         """
         self.str = s
         self.p = Pair_item(p, p + len(s))
+        self.group_id:int
 
-    def __lt__(self, other):
+    def __lt__(self, other)->bool:
         """Less than."""
         return self.p.start < other.p.start
 
-    def __repr__(self):
+    def __repr__(self)->str:
         """Stringify all members."""
         group_id = getattr(self, 'group_id', -1)
         return \
             f"s:'{self.str}' start:{self.p[0]} end:{self.p[1]} g_id:{group_id}"
 
-    def __eq__(self, other: str):
+    def equals(self, other:str)->bool:
         """Equal the token string."""
         return self.str == other
-
-    def equals(self, other):
-        """Equal the token string and the position."""
-        return self.str == other.str and self.p == other.p
 
 
 @dataclass
@@ -60,7 +55,7 @@ class Mod_counter:
         return
 
 
-class Delim():
+class Delim(Delimiter):
     """Class describing the yml file information of each delimiter.
 
     The class has the form of:
@@ -71,46 +66,6 @@ class Delim():
               "hide":False, "tooltip":False, "exclude_db":False,
             "substitute":".. class m-noindent"}
     """
-
-    def __init__(self, *args):
-        if isinstance(args, dict):
-            args = args.values()
-        for ix, d in enumerate(DELIMITER_KEYS):
-            if ix < len(args):    # assign from args
-                self.__setattr__(d, args[ix])
-            # these require text, so make null string as default
-            elif d in ["inline_markup", "substitute"]:
-                self.__setattr__(d, '')
-            # these are bool so default to False
-            else:
-                self.__setattr__(d, False)
-
-    def __eq__(self, token: str) -> bool:
-        """Use to compare to token object with a str.
-
-        Parameters
-        ----------
-        token : str
-
-        Returns
-        -------
-        bool
-        """
-        return self.token == token
-    
-    @staticmethod
-    def default_dict(**kwargs):
-        for ix, d in enumerate(DELIMITER_KEYS):
-            
-            self.__setattr__(d, )
-            # these require text, so make null string as default
-            elif d in ["inline_markup", "substitute"]:
-                self.__setattr__(d, '')
-            # these are bool so default to False
-            else:
-                self.__setattr__(d, False)
-            
-
     @staticmethod
     def surround(m: str, text: str) -> str:
         """Modify text to include inline_markup `m`.
@@ -138,9 +93,9 @@ class Delim():
                 _text.append(line.replace(_l, ''.join((m, _l, m))))
             else:
                 _text.append(line)
-        return _text
+        return '\n'.join(_text)
 
-    def get_modified_lines(self, text: str, mod: Mod_counter) -> List[str]:
+    def get_modified_lines(self, text: str, mod: Mod_counter) -> str:
         """Modify the line by adding inline-markup or substituting or hiding.
 
         Parameters
@@ -156,29 +111,29 @@ class Delim():
             A list of the modified text broken up into lines
             according to the presence of newline.
         """
-        if self.inline_markup:
+        if self.inline_markup:  
             # markup insertion
-            _line = Delim.surround(self.inline_markup, text)
+            _line = Delim.surround(self.inline_markup, text) 
             mod.inc('inline_markup')
-        elif self.substitute:
-            _line = [self.substitute + text]
+        elif self.substitute:    
+            _line = self.substitute + text 
             mod.inc('substitute')
-        elif self.hide:
+        elif self.hide:    
             mod.inc('hide')
-            return None
+            return ''
         else:
-            _line = [text]
+            _line = text
             mod.inc('untouched')
         return _line
 
 
 class Setting:
     """Contain all the information from the input yaml file instructions."""
-
-    def __init__(self, yaml_dict: TypedDict, yk: Yaml_keywords):
+    
+    def __init__(self, yaml_dict: Dict):
         self.markup_language = self.get_markup_language(
             yaml_dict.get('markup_language', ''))
-        self.delim_dict = self.get_delims(yaml_dict, yk)
+        self.delim_dict = self.get_delims(yaml_dict)
         self.verse_line_markup = '| ' \
             if self.markup_language == 'rst' else ''
 
@@ -193,14 +148,12 @@ class Setting:
         return 'rst'
 
     @staticmethod
-    def get_delims(yaml_dict: TypedDict, yk: Yaml_keywords) -> TypedDict:
+    def get_delims(yaml_dict: Dict) -> Dict:
         """Use `strictyaml` schema to return a `dict`.
 
         Parameters
         ----------
         settings : TypedDict
-            DESCRIPTION.
-        yk : Yaml_keywords
             DESCRIPTION.
 
         Returns
@@ -209,6 +162,7 @@ class Setting:
             DESCRIPTION.
         """
         delim_dict = {}
+        yk=Yaml_keywords()
         for tag, delim in yaml_dict.get(yk.delimiters, {}).items():
             if tag in ['Verse']:
                 _d = Delim(delim, tag.lower())
@@ -223,6 +177,6 @@ class Setting:
             _d.substitute = yaml_dict.get(yk.substitute, {tag: ''})\
                 .get(tag, '')
             delim_dict[_d.token] = _d
-        delim_dict[yaml_dict.get(yk.end_delimiter)] = \
-            Delim(yaml_dict.get(yk.end_delimiter), END_DELIMITER)
+        end_token = str(yaml_dict.get(yk.end_delimiter)) # for mypy
+        delim_dict[end_token] = Delim(end_token, END_DELIMITER)
         return delim_dict
