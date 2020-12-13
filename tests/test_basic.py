@@ -16,7 +16,7 @@ from palitype.palilex import group_into_sections, get_settings
 from palitype.db_ref import populate_sections
 from palitype.palilex import markup_substitution
 from palitype.classes import Delim, Mod_counter, Setting
-from palitype.constants import END_DELIMITER, Delimiter
+from palitype.constants import Delimiter
 #import lark
 #lark.logger.setLevel(logging.DEBUG)
 import re
@@ -116,8 +116,8 @@ def test_surround(text, text_to_markup, finished_text, tok):
 
 def verse_line(start_whitesp: str, phrases: List[str], end_whitesp: str,
                m: str):
-    return '\n'.join([start_whitesp + m + p + m+end_whitesp \
-                    for p in phrases])
+    return '\n'.join([start_whitesp + m + p + m+end_whitesp
+                      for p in phrases])
 
 
 def make_verse(start_whitesp: str, phrases: List[str], end_whitesp: str,
