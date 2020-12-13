@@ -23,6 +23,7 @@ d = context.set_path()
 log_fn = d / 'tests' / 'error.log'
 logging.basicConfig(filename=log_fn, level=logging.DEBUG, filemode='w')
 
+
 @pytest.mark.skip(reason="not finished")
 @pytest.mark.parametrize('text_ix, element_ix, delim_ix, quote',
                          [(0, 0, 0, '[ Cross the flood '),
@@ -36,6 +37,7 @@ def test_populate_sections(text_ix, element_ix, delim_ix, quote):
 
     assert elements[element_ix][delim_ix].text == quote
     assert elements[element_ix][delim_ix].token.str == delimiters[delim_ix]
+
 
 @pytest.mark.skip(reason="not finished")
 @pytest.mark.parametrize('filename, directory, eng, pli, eix', [
@@ -63,11 +65,9 @@ def test_populate(filename, directory, eng, pli, eix):
 
     d = group_into_sections(delims, delimiter_locations(delims, text))
     elements = populate_sections(d, text)
-    english = next(
-        e for e in elements[eix] if delim_dict[e.token.str].tag == "English")
-    pali = next(
-        e for e in elements[eix] if delim_dict[e.token.str].tag == "Pali")
+    english = next(e for e in elements[eix]
+                   if delim_dict[e.token.str].tag == "English")
+    pali = next(e for e in elements[eix]
+                if delim_dict[e.token.str].tag == "Pali")
     assert english.text == eng
     assert pali.text == pli
-
-

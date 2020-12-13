@@ -4,7 +4,6 @@ from typing import List
 
 
 class Token_text:
-
     def __init__(self, token: Token, text: str):
         self.token = token
         self.text = text
@@ -47,7 +46,7 @@ def get_section(elements: List[Token], text: str) -> List[Token_text]:
     """
     _t = [Token_text(e, text[e.p.end : elements[ix+1].p.start]) \
             for ix,e in enumerate(elements[:-1])]
-    _t.append(Token_text(elements[-1], ''))    # end delimiter
+    _t.append(Token_text(elements[-1], ''))  # end delimiter
     return _t
 
 def populate_sections(sections:List[List[Token]], text:str)\

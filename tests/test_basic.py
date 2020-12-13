@@ -78,11 +78,10 @@ def test_group_sections():
     assert len(delims) > 0
     counter = -1
     for token in delims:
-        if token.str == delimiters[-1]:    # end delimiter
+        if token.str == delimiters[-1]:  # end delimiter
             counter += 1
             assert token.group_id == counter
     assert counter > -1
-
 
 
 @pytest.mark.parametrize('filename, directory',
@@ -91,8 +90,6 @@ def test_settings(filename, directory):
     yaml_text = read_file(filename, directory)
     delim_dict = get_settings(yaml_text).delim_dict
     assert delim_dict['==.'].tag == "Pali"
-
-
 
 
 @pytest.mark.parametrize(
@@ -116,14 +113,16 @@ def test_surround(text, text_to_markup, finished_text, tok):
     print(mu, istart, iend)
     assert text.replace(text[istart:iend], mu) == finished_text
 
-def verse_line(start_whitesp:str, phrases:List[str], end_whitesp:str, m:str):
+
+def verse_line(start_whitesp: str, phrases: List[str], end_whitesp: str,
+               m: str):
     return '\n'.join([start_whitesp + m + p + m+end_whitesp \
                     for p in phrases])
-    
 
-def make_verse(start_whitesp:str, phrases:List[str], end_whitesp:str, m:str):
-    """
-    Make a verse and its corresponding marked-up version.
+
+def make_verse(start_whitesp: str, phrases: List[str], end_whitesp: str,
+               m: str):
+    """Make a verse and its corresponding marked-up version.
 
     Parameters
     ----------
@@ -139,69 +138,76 @@ def make_verse(start_whitesp:str, phrases:List[str], end_whitesp:str, m:str):
         Original text.
     answer : List[str]
         Marked-up version in plit lines
-
     """
-    answer = verse_line(start_whitesp,phrases,end_whitesp,m).splitlines()
-    test_text = verse_line(start_whitesp,phrases,end_whitesp,'')
-    return test_text,answer
+    answer = verse_line(start_whitesp, phrases, end_whitesp, m).splitlines()
+    test_text = verse_line(start_whitesp, phrases, end_whitesp, '')
+    return test_text, answer
 
-def make_delims(nr_lang:int):
-    if nr_lang>24:
+
+def make_delims(nr_lang: int):
+    if nr_lang > 24:
         nr_lang = 24
     elif not nr_lang:
-        nr_lang =1
-    inline_markup = ['']*(nr_lang+1)
-    inline_markup[-2]='*'  # 2nd last delimiter has inline markup
+        nr_lang = 1
+    inline_markup = [''] * (nr_lang + 1)
+    inline_markup[-2] = '*'  # 2nd last delimiter has inline markup
     delim = {}
-    for lang_ix,m in enumerate(inline_markup):
-        ix_s = ord('a')+lang_ix
-        token = chr(ix_s)+'='
-        delim[token] = (Delim(token = token,
-                         tag = ''.join([chr(i) for i in range(ix_s,ix_s+3)]),
-                         inline_markup = m))
+    for lang_ix, m in enumerate(inline_markup):
+        ix_s = ord('a') + lang_ix
+        token = chr(ix_s) + '='
+        delim[token] = (Delim(token=token,
+                              tag=''.join(
+                                  [chr(i) for i in range(ix_s, ix_s + 3)]),
+                              inline_markup=m))
     return delim
 
-def verse_n_lang(delims:Dict[str,Delim],
-                 start_whitesp: str, phrases: List[str], end_whitesp:str):
+
+def verse_n_lang(delims: Dict[str, Delim], start_whitesp: str,
+                 phrases: List[str], end_whitesp: str):
     orig_tot = []
     marked_tot = []
     for delim in list(delims.values())[:-1]:
         orig, marked = make_verse(start_whitesp, phrases, end_whitesp,
-                              delim.inline_markup)
+                                  delim.inline_markup)
         orig_tot.append(delim.token + orig)
         marked_tot.extend(marked)
     orig_tot.append(delims[list(delims.keys())[-1]].token)
-    
-    return '\n'.join(orig_tot),marked_tot 
-    
+
+    return '\n'.join(orig_tot), marked_tot
+
 
 phrase_pattern = re.compile(r"[^\s=]+[ \w]+[^\s=]+")
 white_space_pattern = re.compile(r" +")
-verse_pattern = [st.from_regex(white_space_pattern, fullmatch=True),
-       st.lists(st.from_regex(phrase_pattern, fullmatch=True), min_size=1),
-       st.from_regex(white_space_pattern, fullmatch=True)]
+verse_pattern = [
+    st.from_regex(white_space_pattern, fullmatch=True),
+    st.lists(st.from_regex(phrase_pattern, fullmatch=True), min_size=1),
+    st.from_regex(white_space_pattern, fullmatch=True)
+]
 
-@given(*verse_pattern) # type: ignore
+
+@given(*verse_pattern)  # type: ignore
 def test_delim_modify_lines(start_whitesp, phrases, end_whitesp):
     delim = Delim()
     delim.inline_markup = '*'
     test_text, answer = make_verse(start_whitesp, phrases, end_whitesp,
-                                         delim.inline_markup)
+                                   delim.inline_markup)
     mod = Mod_counter()
     mod_text = delim.get_modified_lines(test_text, mod)
     a = '\n'.join(answer)
     assert mod_text == a
     assert getattr(mod, "inline_markup", 0) == 1
-    
+
+
 #@pytest.mark.parametrize('start_whitesp, phrases, end_whitesp',
 #                         [('   ',['asdf','zxcv','qwer'],' ')])
 
-@given(*verse_pattern) # type: ignore
+
+@given(*verse_pattern)  # type: ignore
 def test_verse_n(start_whitesp, phrases, end_whitesp):
     settings = Setting({})
     settings.delim_dict = make_delims(2)
-    test_text, answer = verse_n_lang(settings.delim_dict,
-                                     start_whitesp, phrases, end_whitesp)
+    test_text, answer = verse_n_lang(settings.delim_dict, start_whitesp,
+                                     phrases, end_whitesp)
     mod = Mod_counter()
 
     delims = list(settings.delim_dict.keys())
@@ -211,7 +217,7 @@ def test_verse_n(start_whitesp, phrases, end_whitesp):
         test_text)
     assert mod_text == '\n'.join(answer)
 
-    
+
 @pytest.mark.parametrize('filename, directory, nr_pali',
                          [('palitype_instr_1.yml', 'tests', 3),
                           ('palitype_instr_0.yml', 'tests', 7)])
@@ -248,8 +254,7 @@ def test_substitute(filename, directory, sub_ix_1):
     d = group_into_sections(delims, delimiter_locations(delims, text))
     mod_text, mod = markup_substitution(settings, d, text)
 
-    sub_text = next(delim_dict[ix]
-                    for ix in delim_dict.keys()
+    sub_text = next(delim_dict[ix] for ix in delim_dict.keys()
                     if delim_dict[ix].tag == "verse").substitute
 
     assert mod_text.find(sub_text) == sub_ix_1

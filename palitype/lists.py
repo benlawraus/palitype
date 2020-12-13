@@ -26,7 +26,6 @@ class L(list):
     a = L( 2 ** b for b in range(4) )( x="Hey!" )  # [1, 2, 4, 8]
     a = L( 2 )                                     # [2]
     """
-
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls, args, kwargs)
 

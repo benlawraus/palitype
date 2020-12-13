@@ -47,7 +47,7 @@ def readfile(filename: str, directory: str = 'source'):
     n = []
     with fn.open("r") as f:
         lines = f.readlines()
-        text = ''.join(lines)    #list(f))
+        text = ''.join(lines)  #list(f))
         n.extend(f.newlines)
         """
         line = f.readline()

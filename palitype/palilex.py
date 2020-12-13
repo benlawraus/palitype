@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """To make writing about pali texts easier."""
 
-
-from typing import List, Tuple, TypedDict, Dict, cast
+from typing import List, Tuple, Dict, cast
 import strictyaml as sy
 import pathlib
 import argparse
@@ -97,13 +96,13 @@ def group_into_sections(delim: Tuple[str], tokens: List[Token]) -> List[Token]:
     # go through the whole list of tokens
     group_id = 0
     while istart < len(tokens):
-        if tokens[istart].str in delim[:-1]:    # start delimiter
+        if tokens[istart].str in delim[:-1]:  # start delimiter
             used_tokens = [tokens[istart]]
             for iend, tt in enumerate(tokens[istart + 1:]):
-                if tt in used_tokens:    # something wrong, repeated token
+                if tt in used_tokens:  # something wrong, repeated token
                     istart += iend
                     break
-                if tt.str == delim[-1]:    # end delimiter
+                if tt.str == delim[-1]:  # end delimiter
                     for t_ix in range(istart, iend + istart + 2):
                         tokens[t_ix].group_id = group_id
                     group_id += 1
@@ -121,7 +120,7 @@ def read_yaml_string(yaml_text: str) -> Dict:
     ----------
     yaml_text : str
         The text read from a ``.yml`` file.
-    
+
     Returns
     -------
     TypedDict
@@ -129,14 +128,22 @@ def read_yaml_string(yaml_text: str) -> Dict:
     """
     YK = Yaml_keywords()
     schema = sy.Map({
-        sy.Optional(YK.markup_language): sy.Str(),
-        YK.delimiters: sy.MapPattern(sy.Str(), sy.Any(), minimum_keys=2),
-        YK.end_delimiter: sy.Str(),
-        sy.Optional(YK.inline_markup): sy.MapPattern(sy.Str(), sy.Any()),
-        sy.Optional(YK.hide): sy.UniqueSeq(sy.Str()),
-        sy.Optional(YK.tooltip): sy.UniqueSeq(sy.Str()),
-        sy.Optional(YK.exclude_db): sy.UniqueSeq(sy.Str()),
-        sy.Optional(YK.substitute): sy.MapPattern(sy.Str(), sy.Any())
+        sy.Optional(YK.markup_language):
+        sy.Str(),
+        YK.delimiters:
+        sy.MapPattern(sy.Str(), sy.Any(), minimum_keys=2),
+        YK.end_delimiter:
+        sy.Str(),
+        sy.Optional(YK.inline_markup):
+        sy.MapPattern(sy.Str(), sy.Any()),
+        sy.Optional(YK.hide):
+        sy.UniqueSeq(sy.Str()),
+        sy.Optional(YK.tooltip):
+        sy.UniqueSeq(sy.Str()),
+        sy.Optional(YK.exclude_db):
+        sy.UniqueSeq(sy.Str()),
+        sy.Optional(YK.substitute):
+        sy.MapPattern(sy.Str(), sy.Any())
     })
     return sy.load(yaml_text, schema).data
 
@@ -158,7 +165,6 @@ def get_settings(yaml_text: str) -> Setting:
     -------
     Dict
     """
-    
     yaml_settings = read_yaml_string(yaml_text)
     text_settings = Setting(yaml_settings)
 
@@ -176,7 +182,7 @@ def markup_substitution(settings: Setting, delim_positions: List[Token],
     delim_dict = settings.delim_dict
     positions = sorted(delim_positions)
     mod = Mod_counter()
-    _text = [text[:positions[0].p.start]]    # text up to first delim
+    _text = [text[:positions[0].p.start]]  # text up to first delim
     mod.inc('untouched')
     verse_markup = ''
     for _this, _next in pairwise(positions):
@@ -228,11 +234,11 @@ def palilex(files: List[str]):
             raise Exception("No instruction filename in file.")
         yaml_text = (p.parent / instr_filename).read_text()
         settings = get_settings(yaml_text)
-        delims = cast(Tuple[str],list(settings.delim_dict.keys()))
+        delims = cast(Tuple[str], list(settings.delim_dict.keys()))
         mod_text, mod = markup_substitution(
             settings,
             group_into_sections(delims, delimiter_locations(delims, text)),
-            text) 
+            text)
         for k, v in mod.__dict__.items():
             if k == 'last_change':
                 continue

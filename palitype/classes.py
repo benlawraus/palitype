@@ -2,7 +2,7 @@
 """Contains classes."""
 from dataclasses import dataclass
 from .constants import Delimiter, END_DELIMITER, Yaml_keywords
-from typing import List, TypedDict, Any, Dict
+from typing import Dict
 from collections import namedtuple
 
 Pair_item = namedtuple("Pair_item", "start end")
@@ -21,23 +21,22 @@ class Token():
             token.
         p : int
             location of first char of token.
-
         """
         self.str = s
         self.p = Pair_item(p, p + len(s))
-        self.group_id:int
+        self.group_id: int
 
-    def __lt__(self, other)->bool:
+    def __lt__(self, other) -> bool:
         """Less than."""
         return self.p.start < other.p.start
 
-    def __repr__(self)->str:
+    def __repr__(self) -> str:
         """Stringify all members."""
         group_id = getattr(self, 'group_id', -1)
         return \
             f"s:'{self.str}' start:{self.p[0]} end:{self.p[1]} g_id:{group_id}"
 
-    def equals(self, other:str)->bool:
+    def equals(self, other: str) -> bool:
         """Equal the token string."""
         return self.str == other
 
@@ -66,6 +65,7 @@ class Delim(Delimiter):
               "hide":False, "tooltip":False, "exclude_db":False,
             "substitute":".. class m-noindent"}
     """
+
     @staticmethod
     def surround(m: str, text: str) -> str:
         """Modify text to include inline_markup `m`.
@@ -111,14 +111,14 @@ class Delim(Delimiter):
             A list of the modified text broken up into lines
             according to the presence of newline.
         """
-        if self.inline_markup:  
+        if self.inline_markup:
             # markup insertion
-            _line = Delim.surround(self.inline_markup, text) 
+            _line = Delim.surround(self.inline_markup, text)
             mod.inc('inline_markup')
-        elif self.substitute:    
-            _line = self.substitute + text 
+        elif self.substitute:
+            _line = self.substitute + text
             mod.inc('substitute')
-        elif self.hide:    
+        elif self.hide:
             mod.inc('hide')
             return ''
         else:
@@ -129,7 +129,7 @@ class Delim(Delimiter):
 
 class Setting:
     """Contain all the information from the input yaml file instructions."""
-    
+
     def __init__(self, yaml_dict: Dict):
         self.markup_language = self.get_markup_language(
             yaml_dict.get('markup_language', ''))
@@ -162,7 +162,7 @@ class Setting:
             DESCRIPTION.
         """
         delim_dict = {}
-        yk=Yaml_keywords()
+        yk = Yaml_keywords()
         for tag, delim in yaml_dict.get(yk.delimiters, {}).items():
             if tag in ['Verse']:
                 _d = Delim(delim, tag.lower())
@@ -177,6 +177,6 @@ class Setting:
             _d.substitute = yaml_dict.get(yk.substitute, {tag: ''})\
                 .get(tag, '')
             delim_dict[_d.token] = _d
-        end_token = str(yaml_dict.get(yk.end_delimiter)) # for mypy
+        end_token = str(yaml_dict.get(yk.end_delimiter))  # for mypy
         delim_dict[end_token] = Delim(end_token, END_DELIMITER)
         return delim_dict
