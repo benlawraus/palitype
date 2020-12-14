@@ -31,3 +31,6 @@ class Delimiter:
     hide: bool = False
     tooltip: bool = False
     exclude_db: bool = False
+
+
+VERSE_DELIM = Delimiter(tag='verse')

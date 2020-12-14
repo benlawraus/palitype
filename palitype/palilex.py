@@ -7,6 +7,7 @@ import pathlib
 import argparse
 
 import sys
+from .constants import VERSE_DELIM
 from .classes import Yaml_keywords, Token, Mod_counter, Setting
 # from palitype.lists import L
 from more_itertools import (pairwise)
@@ -192,19 +193,18 @@ def markup_substitution(settings: Setting, delim_positions: List[Token],
             continue
 
         if settings.verse_line_markup:
-            if delim_dict[_next.str].tag == "verse":
+            if delim_dict[_this.str].tag == VERSE_DELIM.tag:
                 # start of group that contains a verse
                 verse_markup = settings.verse_line_markup
-            elif verse_markup and (_this.group_id != _next.group_id):
+            if verse_markup and (_this.group_id != _next.group_id):
                 verse_markup = ''
-            elif verse_markup and delim_dict[_this.str].tag != "verse":
-
-                _line_by_line = _line.splitlines()
-                _line = '\n'.join([
-                    a_line.replace(a_line.strip(),
-                                   verse_markup + a_line.strip())
-                    for a_line in _line_by_line
-                ])
+            elif verse_markup:  # and delim_dict[_this.str].tag != VERSE_TAG:
+                _new = []
+                for a_line in _line.splitlines(keepends=True):
+                    phrase = a_line
+                    _new.append(
+                        a_line.replace(phrase, verse_markup + phrase, 1))
+                _line = ''.join(_new)
         _text.append(_line)
     # add section after the last delimiter
     _text.append(text[_next.p.end:])
