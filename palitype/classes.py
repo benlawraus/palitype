@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 """Contains classes."""
 from dataclasses import dataclass
-from .constants import Delimiter, END_DELIMITER, Yaml_keywords
 from typing import Dict
 from collections import namedtuple
+from .constants import Delimiter, END_DELIMITER, YamlKeywords
 
-Pair_item = namedtuple("Pair_item", "start end")
-Pair_delimiter_text = namedtuple("Pair_delimiter_text", "delimiter text")
+PairItem = namedtuple("PairItem", "start end")
 
 
 class Token():
@@ -23,18 +22,19 @@ class Token():
             location of first char of token.
         """
         self.str = s
-        self.p = Pair_item(p, p + len(s))
+        self.loc = PairItem(p, p + len(s))
         self.group_id: int
 
     def __lt__(self, other) -> bool:
         """Less than."""
-        return self.p.start < other.p.start
+        return self.loc.start < other.loc.start
 
     def __repr__(self) -> str:
         """Stringify all members."""
         group_id = getattr(self, 'group_id', -1)
         return \
-            f"s:'{self.str}' start:{self.p[0]} end:{self.p[1]} g_id:{group_id}"
+            f"s:'{self.str}' start:{self.loc[0]} end:{self.loc[1]}" \
+            f" g_id:{group_id}"
 
     def equals(self, other: str) -> bool:
         """Equal the token string."""
@@ -42,7 +42,7 @@ class Token():
 
 
 @dataclass
-class Mod_counter:
+class ModCounter:
     """Count the changes to the input text."""
 
     last_change = None
@@ -51,7 +51,6 @@ class Mod_counter:
         """Increment an attribute."""
         self.last_change = key
         self.__setattr__(key, getattr(self, key, 0) + 1)
-        return
 
 
 class Delim(Delimiter):
@@ -67,7 +66,7 @@ class Delim(Delimiter):
     """
 
     @staticmethod
-    def surround(m: str, text: str) -> str:
+    def surround(m_inline: str, text: str) -> str:
         """Modify text to include inline_markup `m`.
 
         Specifically for markup when text that requires inline markup
@@ -76,7 +75,7 @@ class Delim(Delimiter):
 
         Parameters
         ----------
-        m : str
+        m_inline : str
             The markup instruction that encloses the text.
         text : str
             The input text.
@@ -90,19 +89,20 @@ class Delim(Delimiter):
         for line in text.splitlines():
             _l = line.strip()
             if _l:
-                _text.append(line.replace(_l, ''.join((m, _l, m))))
+                _text.append(line.replace(_l, ''.
+                                          join((m_inline, _l, m_inline))))
             else:
                 _text.append(line)
         return '\n'.join(_text)
 
-    def get_modified_lines(self, text: str, mod: Mod_counter) -> str:
+    def get_modified_lines(self, text: str, mod: ModCounter) -> str:
         """Modify the line by adding inline-markup or substituting or hiding.
 
         Parameters
         ----------
         text : str
             The string that is to be modified. Does not contain any markup.
-        mod : Mod_counter
+        mod : ModCounter
             A counter of what was modified.
 
         Returns
@@ -115,9 +115,6 @@ class Delim(Delimiter):
             # markup insertion
             _line = Delim.surround(self.inline_markup, text)
             mod.inc('inline_markup')
-        elif self.substitute:
-            _line = self.substitute + text
-            mod.inc('substitute')
         elif self.hide:
             mod.inc('hide')
             return ''
@@ -136,6 +133,7 @@ class Setting:
         self.delim_dict = self.get_delims(yaml_dict)
         self.verse_line_markup = '| ' \
             if self.markup_language == 'rst' else ''
+        self.indentations = yaml_dict.get('indentations', 4)
 
     @staticmethod
     def get_markup_language(lang: str = '') -> str:
@@ -162,21 +160,21 @@ class Setting:
             DESCRIPTION.
         """
         delim_dict = {}
-        yk = Yaml_keywords()
-        for tag, delim in yaml_dict.get(yk.delimiters, {}).items():
+        _yk = YamlKeywords()
+        for tag, delim in yaml_dict.get(_yk.delimiters, {}).items():
             if tag in ['Verse']:
                 _d = Delim(delim, tag.lower())
             else:
                 _d = Delim(delim, tag)
-            _d.inline_markup = yaml_dict.get(yk.inline_markup, {
+            _d.inline_markup = yaml_dict.get(_yk.inline_markup, {
                 tag: ''
             }).get(tag, '')
-            _d.hide = tag in yaml_dict.get(yk.hide, [])
-            _d.tooltip = tag in yaml_dict.get(yk.tooltip, [])
-            _d.exclude_db = tag in yaml_dict.get(yk.exclude_db, [])
-            _d.substitute = yaml_dict.get(yk.substitute, {tag: ''})\
+            _d.hide = tag in yaml_dict.get(_yk.hide, [])
+            _d.tooltip = tag in yaml_dict.get(_yk.tooltip, [])
+            _d.exclude_db = tag in yaml_dict.get(_yk.exclude_db, [])
+            _d.substitute = yaml_dict.get(_yk.substitute, {tag: ''})\
                 .get(tag, '')
             delim_dict[_d.token] = _d
-        end_token = str(yaml_dict.get(yk.end_delimiter))  # for mypy
+        end_token = str(yaml_dict.get(_yk.end_delimiter))  # for mypy
         delim_dict[end_token] = Delim(end_token, END_DELIMITER)
         return delim_dict

@@ -11,7 +11,7 @@ from palitype.palilex import delimiter_locations
 from palitype.palilex import group_into_sections, get_settings
 from palitype.db_ref import populate_sections
 from palitype.palilex import markup_substitution
-from palitype.classes import Delim, Mod_counter
+from palitype.classes import Delim, ModCounter
 from palitype.constants import END_DELIMITER, Delimiter
 from test_basic import get_pali_shorthand
 #import lark

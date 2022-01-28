@@ -7,7 +7,7 @@ from typing import NamedTuple
 END_DELIMITER = '__EnD__TeRmINaL__'
 
 
-class Yaml_keywords(NamedTuple):
+class YamlKeywords(NamedTuple):
     """Stores yaml file keywords."""
 
     markup_language: str = "Markup Language".lower()
@@ -18,6 +18,7 @@ class Yaml_keywords(NamedTuple):
     hide: str = 'Do not show'.lower()
     tooltip: str = 'Show when hover'.lower()
     exclude_db: str = "Exclude from database".lower()
+    indentations: str = "Number of indentation spaces".lower()
 
 
 @dataclass

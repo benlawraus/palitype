@@ -2,15 +2,15 @@
 """To make writing about pali texts easier."""
 
 from typing import List, Tuple, Dict, cast
-import strictyaml as sy
 import pathlib
 import argparse
 
 import sys
-from .constants import VERSE_DELIM
-from .classes import Yaml_keywords, Token, Mod_counter, Setting
-# from palitype.lists import L
+import strictyaml as sy
 from more_itertools import (pairwise)
+from .constants import VERSE_DELIM
+from .classes import YamlKeywords, Token, ModCounter, Setting
+# from palitype.lists import L
 module_dir = pathlib.Path(__file__).parent
 if str(module_dir) not in sys.path:
     sys.path.append(str(module_dir))
@@ -99,17 +99,17 @@ def group_into_sections(delim: Tuple[str], tokens: List[Token]) -> List[Token]:
     while istart < len(tokens):
         if tokens[istart].str in delim[:-1]:  # start delimiter
             used_tokens = [tokens[istart]]
-            for iend, tt in enumerate(tokens[istart + 1:]):
-                if tt in used_tokens:  # something wrong, repeated token
+            for iend, _tt in enumerate(tokens[istart + 1:]):
+                if _tt in used_tokens:  # something wrong, repeated token
                     istart += iend
                     break
-                if tt.str == delim[-1]:  # end delimiter
+                if _tt.str == delim[-1]:  # end delimiter
                     for t_ix in range(istart, iend + istart + 2):
                         tokens[t_ix].group_id = group_id
                     group_id += 1
                     istart += iend + 1
                     break
-                used_tokens.append(tt)
+                used_tokens.append(_tt)
         istart += 1
     return tokens
 
@@ -127,24 +127,26 @@ def read_yaml_string(yaml_text: str) -> Dict:
     TypedDict
         settings dict.
     """
-    YK = Yaml_keywords()
+    _yk = YamlKeywords()
     schema = sy.Map({
-        sy.Optional(YK.markup_language):
+        sy.Optional(_yk.markup_language):
         sy.Str(),
-        YK.delimiters:
+        _yk.delimiters:
         sy.MapPattern(sy.Str(), sy.Any(), minimum_keys=2),
-        YK.end_delimiter:
+        _yk.end_delimiter:
         sy.Str(),
-        sy.Optional(YK.inline_markup):
+        sy.Optional(_yk.inline_markup):
         sy.MapPattern(sy.Str(), sy.Any()),
-        sy.Optional(YK.hide):
+        sy.Optional(_yk.hide):
         sy.UniqueSeq(sy.Str()),
-        sy.Optional(YK.tooltip):
+        sy.Optional(_yk.tooltip):
         sy.UniqueSeq(sy.Str()),
-        sy.Optional(YK.exclude_db):
+        sy.Optional(_yk.exclude_db):
         sy.UniqueSeq(sy.Str()),
-        sy.Optional(YK.substitute):
-        sy.MapPattern(sy.Str(), sy.Any())
+        sy.Optional(_yk.substitute):
+        sy.MapPattern(sy.Str(), sy.Any()),
+        sy.Optional(_yk.indentations):
+        sy.Int()
     })
     return sy.load(yaml_text, schema).data
 
@@ -172,8 +174,25 @@ def get_settings(yaml_text: str) -> Setting:
     return text_settings
 
 
+def text_realign(text, settings):
+    """Re-aligns the verses in rst."""
+    train = []
+    for _l in text.splitlines():
+        if _l.find(settings.verse_line_markup, 1) > -1:
+            _v = _l.replace(settings.verse_line_markup, '', 1)
+            nr_spaces = len(_v) - len(_v.lstrip())
+            changed_nr_spaces = \
+                round(nr_spaces/settings.indentations)*settings.indentations\
+                - len(settings.verse_line_markup)
+            train.append(settings.verse_line_markup
+                         + ' '*changed_nr_spaces + _v.lstrip())
+        else:
+            train.append(_l)
+    return '\n'.join(train)
+
+
 def markup_substitution(settings: Setting, delim_positions: List[Token],
-                        text: str) -> Tuple[str, Mod_counter]:
+                        text: str) -> Tuple[str, ModCounter]:
     """Take the palitype and replace with rst equivalent.
 
     Replaces the pali type instructions to produce a standard rst output.
@@ -182,32 +201,40 @@ def markup_substitution(settings: Setting, delim_positions: List[Token],
     """
     delim_dict = settings.delim_dict
     positions = sorted(delim_positions)
-    mod = Mod_counter()
-    _text = [text[:positions[0].p.start]]  # text up to first delim
+    mod = ModCounter()
+    _text = [text[:positions[0].loc.start]]  # text up to first delim
     mod.inc('untouched')
     verse_markup = ''
     for _this, _next in pairwise(positions):
         _line = delim_dict[_this.str].get_modified_lines(
-            text[_this.p.end:_next.p.start], mod)
-        if _line == '':
-            continue
-
+            text[_this.loc.end:_next.loc.start], mod)
         if settings.verse_line_markup:
             if delim_dict[_this.str].tag == VERSE_DELIM.tag:
                 # start of group that contains a verse
                 verse_markup = settings.verse_line_markup
+                if _line[0] == '\n':
+                    _line = _line[1:]
             if verse_markup and (_this.group_id != _next.group_id):
                 verse_markup = ''
             elif verse_markup:  # and delim_dict[_this.str].tag != VERSE_TAG:
                 _new = []
                 for a_line in _line.splitlines(keepends=True):
-                    phrase = a_line
-                    _new.append(
-                        a_line.replace(phrase, verse_markup + phrase, 1))
+                    phrase = a_line.strip()
+                    if a_line.find('\n') == -1 and phrase == '':
+                        _new.append(a_line)
+                    else:
+                        _new.append(
+                            a_line.replace(phrase, verse_markup + phrase, 1))
                 _line = ''.join(_new)
+
+        if delim_dict[_this.str].substitute:
+            _line = delim_dict[_this.str].substitute + _line
+            mod.inc('substitute')
+
         _text.append(_line)
     # add section after the last delimiter
-    _text.append(text[_next.p.end:])
+    _text.append(
+        text[_next.loc.end:])  # pylint: disable=undefined-loop-variable
     mod.inc('untouched')
     _complete = ''.join(_text)
     return _complete, mod
@@ -226,23 +253,27 @@ def palilex(files: List[str]):
     None.
     """
     for infile in files:
-        p = pathlib.Path(infile)
-        input_text = p.read_text()
+        _p = pathlib.Path(infile)
+        input_text = _p.read_text()
         (firstline, text) = input_text.split('\n', maxsplit=1)
+        # palitype files have to have a
+        # .. include:: palitype_instructions.yml
+        # as the first line to point to the delimiter file
         instr_filename = firstline.partition(':: ')[2]
         if instr_filename == '':
             raise Exception("No instruction filename in file.")
-        yaml_text = (p.parent / instr_filename).read_text()
+        yaml_text = (_p.parent / instr_filename).read_text()
         settings = get_settings(yaml_text)
         delims = cast(Tuple[str], list(settings.delim_dict.keys()))
         mod_text, mod = markup_substitution(
             settings,
             group_into_sections(delims, delimiter_locations(delims, text)),
             text)
-        for k, v in mod.__dict__.items():
-            if k == 'last_change':
+        mod_text = text_realign(mod_text, settings)
+        for _k, _v in mod.__dict__.items():
+            if _k == 'last_change':
                 continue
-            print(f"number of {k} sections is {v}")
+            print(f"number of {_k} sections is {_v}")
         pathlib.Path(infile + '.rst').write_text(mod_text)
         return
 

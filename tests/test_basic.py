@@ -16,7 +16,7 @@ from palitype.palilex import delimiter_locations
 from palitype.palilex import group_into_sections, get_settings
 from palitype.db_ref import populate_sections
 from palitype.palilex import markup_substitution
-from palitype.classes import Delim, Mod_counter, Setting
+from palitype.classes import Delim, ModCounter, Setting
 from palitype.constants import VERSE_DELIM
 
 #import lark
@@ -41,17 +41,19 @@ def get_pali_shorthand(file_nr: int = 0):
 
 
 def test_write_read_file():
+    """Test read_file()"""
+
     filename = "test.txt"
     dir_name = pathlib.Path(__file__).parent
     delimiters, text = get_pali_shorthand()
     nr_char = write_file(text, filename, dir_name)
-    fn = build_path(filename, dir_name)
-    assert nr_char == len(text) and fn.is_file()
+    _fn = build_path(filename, dir_name)
+    assert nr_char == len(text) and _fn.is_file()
     file_text = read_file(filename, dir_name)
     logging.info('test')
     assert file_text[0] == text[0]
-    fn.unlink()
-    assert not fn.is_file()
+    _fn.unlink()
+    assert not _fn.is_file()
 
     grammar = read_grammar('restructuredtext.grammar')
     assert grammar[0] == '/'
@@ -90,6 +92,19 @@ def test_group_sections():
     group_id_loop(delims, delimiters)
 
 
+pattern = re.compile(r".*v=[^=]*?e=[^=]*?p=[^=]*?\.=[^=]*")
+verse_pattern = [st.from_regex(pattern, fullmatch=True)]
+
+
+@given(*verse_pattern)
+def test_group_sections2(text):
+    delimiters = ['v=', 'e=', "p=", ".="]
+    delims = delimiter_locations(delimiters, text)
+    delims = group_into_sections(delimiters, delims)
+    assert len(delims) > 0
+    group_id_loop(delims, delimiters)
+
+
 @pytest.mark.parametrize('filename, directory',
                          [('palitype_instr_0.yml', 'tests')])
 def test_settings(filename, directory):
@@ -121,13 +136,13 @@ def test_surround(text, text_to_markup, finished_text, tok):
 
 
 def verse_line(start_whitesp: str,
-               phrases: List[str],
+               phrases: str,
                end_whitesp: str,
-               m: str = '',
+               markup: str = '',
                verse: str = '') -> str:
 
     return '\n'.join(
-        [verse + start_whitesp + m + p + m + end_whitesp for p in phrases])
+        [start_whitesp + verse + markup + p + markup + end_whitesp for p in phrases])
 
 
 def make_verse(start_whitesp: str,
@@ -153,7 +168,7 @@ def make_verse(start_whitesp: str,
         Marked-up version
     """
 
-    answer = verse_line(start_whitesp, phrases, end_whitesp, m=m, verse=verse)
+    answer = verse_line(start_whitesp, phrases, end_whitesp, markup=m, verse=verse)
     test_text = verse_line(start_whitesp, phrases, end_whitesp)
     return test_text, answer
 
@@ -171,7 +186,8 @@ def verse_n_lang(delims: Dict[str, Delim],
                                   end_whitesp,
                                   m=delim.inline_markup,
                                   verse=verse)
-        orig_tot.append(delim.token + orig)
+        orig_tot.append(
+            orig.replace(orig.strip(), delim.token + orig.strip(), 1))
         marked_tot.append(marked)
     orig_tot.append(delims[list(delims.keys())[-1]].token)
 
@@ -219,7 +235,7 @@ def make_delims(nr_lang: int) -> Dict[str, Delim]:
     return delim
 
 
-phrase_pattern = re.compile(r"[^\s=]+[ \w]+[^\s=]+")
+phrase_pattern = re.compile(r"[^\s=|]+[ \w]+[^\s=|]+")
 white_space_pattern = re.compile(r" +")
 verse_pattern = [
     st.from_regex(white_space_pattern, fullmatch=True),
@@ -234,7 +250,7 @@ def test_delim_modify_lines(start_whitesp, phrases, end_whitesp):
     delim.inline_markup = '*'
     test_text, answer = make_verse(start_whitesp, phrases, end_whitesp,
                                    delim.inline_markup)
-    mod = Mod_counter()
+    mod = ModCounter()
     mod_text = delim.get_modified_lines(test_text, mod)
     assert mod_text == answer
     assert getattr(mod, "inline_markup", 0) == 1
@@ -247,7 +263,7 @@ def test_verse_n(start_whitesp, phrases, end_whitesp):
     next(iter(settings.delim_dict.values())).tag = 'dont add verse'
     test_text, answer = verse_n_lang(settings.delim_dict, start_whitesp,
                                      phrases, end_whitesp)
-    mod = Mod_counter()
+    mod = ModCounter()
 
     delims = list(settings.delim_dict.keys())
     mod_text, mod = markup_substitution(
@@ -274,7 +290,7 @@ def test_verse_markup(start_whitesp, phrases, end_whitesp):
                                      phrases,
                                      end_whitesp,
                                      verse='| ')
-    mod = Mod_counter()
+    mod = ModCounter()
     settings.delim_dict = delim_dict
     delims = list(delim_dict.keys())
     delim_list = group_into_sections(delims,
