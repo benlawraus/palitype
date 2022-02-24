@@ -1,0 +1,112 @@
+.. include:: palitype_instructions.yml
+
+SN03 and SN04
+==============
+f=
+:tags: sutta, pali
+:category: Theravada
+:summary: Test a pali commentary
+:date: 2022-01-28 06:38
+:slug: sn003-and-sn004
+
+
+.. include:: roles.txt
+
+
+e=Liberation f=
+#################################
+
+:summary: p=Nimokkha=. A Deva asks about freedom.
+
+.. include:: acknowledgement.txt
+.. include:: deva_asked.txt
+..
+
+The deva sang:
+v=
+    i=sn1.3:2.1
+    e=Flowing past, life is short;
+    p=Upanīyati jīvitamappamāyu,=.
+    i=sn1.3:2.2
+    e=No escape from growing old.
+    p=Jarūpanītassa na santi tāṇā;=.
+    i=sn1.3:2.3
+    e=With this danger of death in sight,
+    p=Etaṁ bhayaṁ maraṇe pekkhamāno,=.
+    i=sn1.3:2.3
+    e=We should do good to bring happiness.
+    p=Puññāni kayirātha sukhāvahānī.=.
+
+The Buddha replied,
+v=
+    i=sn1.3:3.1
+    e=Flowing past, life is short;
+    p=Upanīyati jīvitamappamāyu,=.
+    i=sn1.3:3.2
+    e=No escape from growing old.
+    p=Jarūpanītassa na santi tāṇā;=.
+    i=sn1.3:3.3
+    e=With this danger of death in sight,
+    p=Etaṁ bhayaṁ maraṇe pekkhamāno,=.
+    i=sn1.3:3.4
+    e=Ignore the world allure and seek peace.
+    p=Lokāmisaṁ pajahe santipekkho=.
+
+It is ironic that the last day of a person's life could be the only day that person actually lived.
+Most of the time we are gone, not really here, even though our body is here and our eyes are seeing and
+ears are hearing.  But usually what we are seeing and hearing isn't here but in the thinking where we have gone.
+
+Imagine this instead: this is the last day the whole world will exist, tomorrow Earth will be no more.
+What is there to think about now?
+
+If we choose the Deva's path, we will be giving what we have, no bad speech,
+being kind and loving and doing only good.
+
+If we choose Lord Buddha's path, we will not be tempted to insatiate ourselves, but instead,
+be mindful of our thoughts and seek peace in our mind.
+
+Believe it in or not, when we die, everything we know and remember will also die.
+Do you remember anything from your life before this one? Everything we see and hear and remember and
+the people we know and love and hate, all will be gone too when we die. The whole Earth might as well be
+destroyed. We can never go back again.
+
+On another night, a deva came to see Lord Buddha, and declared:
+v=
+    i=sn1.4:2.1
+    e=Time flies, nights pass by,
+    p=Accenti kālā tarayanti rattiyo,=.
+    i=sn1.4:2.2
+    e=the stages of life leave us one by one.
+    p=Vayoguṇā anupubbaṁ jahanti;=.
+    i=sn1.4:2.3
+    e=Seeing this peril in death,
+    p=Etaṁ bhayaṁ maraṇe pekkhamāno,=.
+    i=sn1.4:2.4
+    e=Do good deeds that bring you to joy.
+    p=Puññāni kayirātha sukhāvahānī=.
+
+The Buddha replied,
+v=
+    i=sn1.4:3.1
+    e=Time flies, nights pass by,
+    p=Accenti kālā tarayanti rattiyo,=.
+    i=sn1.4:3.2
+    e=Stages of life fall one by one.
+    p=Vayoguṇā anupubbaṁ jahanti;=.
+    i=sn1.4:3.3
+    e=With this danger of death in sight,
+    p=Etaṁ bhayaṁ maraṇe pekkhamāno,=.
+    i=sn1.4:3.4
+    e=Ignore the world's allure and seek peace.
+    p=Lokāmisaṁ pajahe santipekkho=.
+
+The world's allure, beckoning in every waking moment and haunting in sleep, is in our eyes and ears, on our tongue
+and between the sheets. Seems impossible to ignore. The allure is one thing, the experience of having that pleasure is
+another.
+
+The mind is showing you advertisements, in the form of thoughts about the wonderful attractions and future pleasures.
+p=Lokāmisaṁ pajahe f= is saying e= "Ignore the ads"=.. Live a life without these ads playing in your brain. Instead, keep
+the peace each moment gives.
+
+
+

@@ -1,0 +1,149 @@
+.. include:: palitype_instructions.yml
+
+SN01 and SN02
+==============
+f=
+:tags: sutta, pali
+:category: Theravada
+:summary: Test a pali commentary
+:date: 2022-01-28 06:38
+:slug: sn001-and-sn002
+
+
+.. include:: roles.txt
+
+
+e=Cross the floodf=
+#################################
+
+:summary: p=Ogha taraṇa=. A Deva asks how to cross the flood waters.
+
+e=Liberationf=
+#################################
+
+:summary: p=Nimokkha=. A Deva asks about freedom.
+
+.. include:: acknowledgement.txt
+
+The first two suttas are the Crossing the Flood p=Oghataraṇa =. sutta and the e=Freedom p= Nimokkha=. sutta.
+
+
+In both, a deva [#deva]_ comes to Lord Buddha with a question.
+Both devas are interested in whether Lord Buddha is enlightened.
+The first asks obtusely if he has "crossed the flood", maybe because the deva has experienced some
+meditation experience and is proud of that. The second deva is more direct, however.
+
+In the first sutta,  a Deva asks:
+v=  
+    i=sn1.1:1.4
+    e=Do you Sir, know how to cross the flood?
+    p=Kathaṃ nu tvaṃ, mārisa, ogham atari?=.
+    
+Lord Buddha replied,
+v=
+    i=sn1.1:1.5
+    e=By not standing (on the bottom),  by not reaching out, is the flood crossed.
+    p=Appatiṭṭhaṃ khvāhaṃ anāyūhaṃ  ogham atari.=. [#āyūhaṃ]_
+
+The god from heaven questioned further, perhaps now with less pride, asking:
+v=
+    i=sn1.1:1.6
+    e=But what do you mean, Sir?
+    p=Yathākathaṃ pana tvaṃ, mārisa, appatiṭṭhaṃ anāyūhaṃ oghamatarīti. =.
+
+v=
+    i=sn1.1:1.7
+    e=Surrounded by rushing water, when I stood on the bottom, then I sank.
+    p=Yadā khvāhaṃ santiṭṭhāmi tadāssu saṃsīdāmi. =.
+    i=sn1.1:1.8
+    e=When I reached out, then I was carried away.
+    p=Yadā khvāhaṃ āyūhāmi tadāssu nibbuyhāmi  . =. [#nibbuyhāmi]_
+
+
+Thoughts arise like the ripples on a rising flood.
+Some thoughts are caused from an experience such as a sound just heard, or a bodily feeling
+just felt.  Perceived as a person, it is now part of the person, so it seems.
+But this person is an idea too! It is the person-idea that is a ground and support for all
+thoughts. "e=In the deep water, I tried to stand on  the bottom below, and I sank. p=Yadā khvāhaṃ santiṭṭhāmi tadāssu saṃsīdāmi.=."
+
+Imagine this support, this cause, this person-idea that triggers most other thinking,
+if it was no longer there. Imagine what happens when consciousness in the mulitude of
+thoughts having no support: no concept nor experience to stand on. Without support,
+consciousness is not.  By standing on the ground in rising flood waters, the person is soon
+enveloped in a world of water.
+
+Thoughts arise like the ripples on a rising flood. Some thoughts are about
+"what will I be", "what will I feel", "what will I see"; future experience.
+Some thoughts are memories of "what I was", "what I felt", "what I saw".
+Something in the past, wanted... or unwanted.
+
+These thoughts are a reaching out to grab something to feel something.
+In the rushing flood, if we reach out and grabbed some floating debris, we are
+carried away with it. "e=When I reached out, then I was carried away p=Yadā khvāhaṃ āyūhāmi tadāssu nibbuyhāmi=.".
+
+Imagine not looking into the future, not reminiscing about the past.
+Imagine not searching, not reaching out, all that would be remaining would be the
+present moment in all its total completeness.
+
+The deva imagined. And said:
+v=
+    i=sn1.1:2.1
+    e=After a long time I see:
+    p=Cirassaṃ vata passāmi,=.
+    i=sn1.1:2.2
+    e=a brahmin extinguished.
+    p=brāhmaṇaṃ parinibbutaṃ;=.
+    i=sn1.1:2.3
+    e=Neither standing nor swimming,
+    p=Appatiṭṭhaṃ anāyūhaṃ,=.
+    i=sn1.1:2.4
+    e=overcome clinging to the world.
+    p=Tiṇṇaṃ loke visattikan ti.=.
+
+In the second sutta of the pair, in the p=Nimokkha Sutta,=. there is another Deva who asks a question that sounds familiar:
+
+i=sn1.2:3.1e=Do you Sir know freedom from within, freedom from without and seclusion?=.
+
+There is a thread here to the first Deva's question.
+e=Freedom from within p=nimokkhaṁ=. is when consciousness has nothing to stand on from within, which is e=unsupportedp=appatiṭṭhaṃ=..
+
+e=Freedom from without p=pamokkhaṁ=. is when consciousness is no longer reaching out for something else. Or as the Cross the Flood sutta says, unsupported and not reaching out to grab something floating by or as in the first sutta: e=reaching out p=anāyūhaṃ =..
+
+With p=nimokkha=. and p=pamokkha=., what remains? A deep and utter e=seclusion p=viveka=., no more inner intrusions and no more outer intrusions.
+
+Lord Buddha replied that he did know these:
+v=
+   i=sn1.2:5.1
+   e=Ending the delight in sensations,
+   p=Nandī bhava parikkhayā,=.
+   i=sn1.2:5.2
+   e=Ending the mind's perceptions,
+   p=Saññāviññāṇasaṅkhayā=.
+   i=sn1.2:5.3
+   e=Feelings silenced in emptiness,
+   p=Vedanānaṁ nirodhā upasamā,=.
+   i=sn1.2:5.4
+   e=That is my realizing
+   p=Evaṁ khvāhaṁ āvuso jānāmi;=.
+   i=sn1.2:5.5
+   e=the freedom within, the freedom without and the seclusion.
+   p=Sattānaṁ nimokkhaṁ pamokkhaṁ vivekan=.
+
+e=Freedom from within p=nimokkha=. is the freedom from the endless thinking p=saññāviññāṇa=..
+It is freedom from the internal cause, free of the support that thoughts need to stand on,
+freedom from what a person feels he or she is. Lord Buddha spoke of
+e=feelings emptied and silenced p=vedana nirodhā upasamā=. When someone is no longer invested in his or her feelings, they are emptied of attachment  and no longer support more thinking for or against those feelings
+
+e=Freedom from without p=pamokkha=. is the freedom from the endless reaching out p=bhava=. that is,  the wishing for more in the future or from the past. It is the wish to see more, hear more, feel more, taste more, smell more, think more.
+ 
+These two are like the wick and wax of the candle flame, and when the wick and wax are removed, the candle flame disappears. e=Feelings p=vedana=. is the candle flame, extinguished when its support and fuel is gone. With the flame of e=feelings p=vedana=. gone, what is left is a deep e=seclusion p=vivekan =.
+
+
+.. [#deva] Devas are those people of heaven; they could be called "gods" or "deities" or "angels". There is no English word for a citizen in a heaven that has no all mighty god as the King, so the original word "deva" will be used.
+
+.. [#āyūhaṃ]  p=āyūhaṃ=. is often translated as striving; here I use e=they reach out with every arm and leg  p= Āyūhati sabbagattebhi jantu=. in the context of the Dāmalisutta. e=Swimming= is a good translation in the context.
+
+
+.. [#nibbuyhāmi]  like a corpse to the cemetery: e=is carried out to the charnel ground p=Nibbuyhati susānaṃ =.
+
+.. _Nibbuyhati susānaṃ: https://suttacentral.net/thig16.1/en/sujato

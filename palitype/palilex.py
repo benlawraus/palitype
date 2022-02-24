@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """To make writing about pali texts easier."""
-
+import string
 from typing import List, Tuple, Dict, cast
 import pathlib
 import argparse
@@ -45,7 +45,7 @@ def str_location(delim: str, text: str) -> List[int]:
 
 
 def delimiter_locations(delimiters: Tuple[str], text: str) -> List[Token]:
-    """Find location of the delimiters in the text as the appear in the text.
+    """Find location of the delimiters in the text as they appear in the text.
 
     Parameters
     ----------
@@ -97,6 +97,7 @@ def group_into_sections(delim: Tuple[str], tokens: List[Token]) -> List[Token]:
     # go through the whole list of tokens
     group_id = 0
     while istart < len(tokens):
+        #if tokens[istart].str ==
         if tokens[istart].str in delim[:-1]:  # start delimiter
             used_tokens = [tokens[istart]]
             for iend, _tt in enumerate(tokens[istart + 1:]):
@@ -214,18 +215,22 @@ def markup_substitution(settings: Setting, delim_positions: List[Token],
                 verse_markup = settings.verse_line_markup
                 if _line[0] == '\n':
                     _line = _line[1:]
-            if verse_markup and (_this.group_id != _next.group_id):
+            look_for = text[_next.loc.start - 2:_next.loc.start]
+            if getattr(_next,'group_id', None) is None:
+                print("huh?!")
+            if verse_markup and (_this.group_id != _next.group_id) and look_for != '  ':
                 verse_markup = ''
             elif verse_markup:  # and delim_dict[_this.str].tag != VERSE_TAG:
-                _new = []
-                for a_line in _line.splitlines(keepends=True):
-                    phrase = a_line.strip()
-                    if a_line.find('\n') == -1 and phrase == '':
-                        _new.append(a_line)
-                    else:
-                        _new.append(
-                            a_line.replace(phrase, verse_markup + phrase, 1))
-                _line = ''.join(_new)
+                if not settings.delim_dict[_next.str].hide:
+                    _new = []
+                    for a_line in _line.splitlines(keepends=True):
+                        phrase = a_line.strip()
+                        if a_line.find('\n') == -1 and phrase == '':
+                            _new.append(a_line)
+                        else:
+                            _new.append(
+                                a_line.replace(phrase, verse_markup + phrase, 1))
+                    _line = ''.join(_new)
 
         if delim_dict[_this.str].substitute:
             _line = delim_dict[_this.str].substitute + _line

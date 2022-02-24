@@ -4,17 +4,10 @@ NOTES
 If you haven't used this for a while or this is your first time, follow these steps.
 
 - Let's make sure that you can edit files!
-  * At the moment, I am trying out ReText as the rst editor
 
-  * I created a directory with ReText install in a ``pipenv`` environment. So 
+  * I used to use ReText, but it doesn't install anymore.
 
-  ..  code-block:: sh
-
-      cd ReText
-      pipenv shell
-      python -m ReText
-
-  * A window should open and then you can edit your file with a preview.
+  * Now I might as well create with pyCharm
 
 - Now what? If you are writing a commentary on a sutta, then you probably would like to use `palitype <readme/palitype>`_.
 - After palitype produced the ``rst`` file, you can see the end resulting html by using `pelican <readme/pelican
@@ -27,7 +20,7 @@ If you haven't used this for a while or this is your first time, follow these st
 Palitype is a preprocessor on markup. It takes text with quotes in different
 languages. It then:
 
-1.  Reads a strict_yaml file https://github.com/crdoconnor/strictyaml.
+1.  Reads a strict_yaml file using `strictyaml <https://github.com/crdoconnor/strictyaml>`_.
     The yaml file indicates the delimiters that indicate the target text
     and the mark-up that will envelope the target text.
     
@@ -46,8 +39,7 @@ Use
 ..  code-block:: sh
         
     cd palitype
-    pipenv shell
-    (palitype)% cd ../content/pages
+    (palitype)% cd content
     (palitype)% python ../../palitype/cli.py SN001.txt
 
 
@@ -112,10 +104,7 @@ On web browser, go to ``http://localhost:8000``
 Environment
 -----------
 
-Let's use pipenv as the package manager.
-..  code-block:: sh
-
-    conda activate SN
+Let's use virtualenv as the package manager.
 
 Sphinx
 ------  
@@ -162,14 +151,6 @@ Gotchas
 ^^^^^^^
 Don't use any spaces in paths. Spaces in pathnames will generate bookmark errors.
 
-Spyder
-------
-Project uses ``Spyder`` as general IDE and editor.
-
-..  code-block:: sh
-
-    cd SN
-    spyder &
 
 docformatter
 ------------

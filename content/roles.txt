@@ -1,0 +1,2 @@
+.. role:: pali_color
+    :class: m-text m-primary
