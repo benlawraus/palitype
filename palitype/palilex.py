@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 """To make writing about pali texts easier."""
-import string
 from typing import List, Tuple, Dict, cast
 import pathlib
 import argparse
 
 import sys
-import strictyaml as sy
 from more_itertools import (pairwise)
+
+from palitype.palitype.io_file import read_yaml_string
 from .constants import VERSE_DELIM
-from .classes import YamlKeywords, Token, ModCounter, Setting
+from .classes import Token, ModCounter, Setting
 # from palitype.lists import L
 module_dir = pathlib.Path(__file__).parent
 if str(module_dir) not in sys.path:
@@ -115,43 +115,6 @@ def group_into_sections(delim: Tuple[str], tokens: List[Token]) -> List[Token]:
     return tokens
 
 
-def read_yaml_string(yaml_text: str) -> Dict:
-    """Decode the ``yaml_text`` according to a schema.
-
-    Parameters
-    ----------
-    yaml_text : str
-        The text read from a ``.yml`` file.
-
-    Returns
-    -------
-    TypedDict
-        settings dict.
-    """
-    _yk = YamlKeywords()
-    schema = sy.Map({
-        sy.Optional(_yk.markup_language):
-        sy.Str(),
-        _yk.delimiters:
-        sy.MapPattern(sy.Str(), sy.Any(), minimum_keys=2),
-        _yk.end_delimiter:
-        sy.Str(),
-        sy.Optional(_yk.inline_markup):
-        sy.MapPattern(sy.Str(), sy.Any()),
-        sy.Optional(_yk.hide):
-        sy.UniqueSeq(sy.Str()),
-        sy.Optional(_yk.tooltip):
-        sy.UniqueSeq(sy.Str()),
-        sy.Optional(_yk.exclude_db):
-        sy.UniqueSeq(sy.Str()),
-        sy.Optional(_yk.substitute):
-        sy.MapPattern(sy.Str(), sy.Any()),
-        sy.Optional(_yk.indentations):
-        sy.Int()
-    })
-    return sy.load(yaml_text, schema).data
-
-
 def get_settings(yaml_text: str) -> Setting:
     """Decode the yaml string into a dict of class `Delim`.
 
@@ -245,7 +208,7 @@ def markup_substitution(settings: Setting, delim_positions: List[Token],
     return _complete, mod
 
 
-def palilex(files: List[str]):
+def palilex(files: List[str], directory: pathlib.Path = None):
     """Read files and formats them.
 
     Parameters
@@ -256,9 +219,16 @@ def palilex(files: List[str]):
     Returns
     -------
     None.
+    :param files:
+    :type files:
+    :param directory:
+    :type directory:
     """
     for infile in files:
-        _p = pathlib.Path(infile)
+        if directory is None:
+            _p = pathlib.Path(infile)
+        else:
+            _p = directory / infile
         input_text = _p.read_text()
         (firstline, text) = input_text.split('\n', maxsplit=1)
         # palitype files have to have a
