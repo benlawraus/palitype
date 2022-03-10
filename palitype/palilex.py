@@ -7,7 +7,7 @@ import argparse
 import sys
 from more_itertools import (pairwise)
 
-from palitype.palitype.io_file import read_yaml_string
+from .io_file import read_yaml_string
 from .constants import VERSE_DELIM
 from .classes import Token, ModCounter, Setting
 # from palitype.lists import L
@@ -97,7 +97,6 @@ def group_into_sections(delim: Tuple[str], tokens: List[Token]) -> List[Token]:
     # go through the whole list of tokens
     group_id = 0
     while istart < len(tokens):
-        #if tokens[istart].str ==
         if tokens[istart].str in delim[:-1]:  # start delimiter
             used_tokens = [tokens[istart]]
             for iend, _tt in enumerate(tokens[istart + 1:]):

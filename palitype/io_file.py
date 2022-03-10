@@ -1,7 +1,7 @@
 from typing import Dict
 
-from palitype.palitype.constants import YamlKeywords
-from strictyaml import
+from .constants import YamlKeywords
+import strictyaml as sy
 
 def read_yaml_string(yaml_text: str) -> Dict:
     """Decode the ``yaml_text`` according to a schema.
